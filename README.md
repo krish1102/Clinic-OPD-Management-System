@@ -83,19 +83,22 @@ Clinic-OPD-Management/
 ### 1️⃣ Install Requirements
 pip install -r requirements.txt
 
-bash
-Copy code
-
 ### 2️⃣ Configure MySQL in `db.py`
 ```python
 DB_CONFIG = {
- 'host':'localhost',
- 'user':'root',
- 'password':'your_password',
- 'database':'clinicdb',
- 'port':3306
+    'host': 'localhost',
+    'user': 'root',
+    'password': 'your_password',
+    'database': 'clinicdb',
+    'port': 3306
 }
-3️⃣ Start App
+
+```
+
+
+
+
+### 3️⃣ Start App
 nginx
 Copy code
 python app.py
