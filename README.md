@@ -3,9 +3,9 @@ Clinic OPD Management System (Desktop Application)
 **Project Information**
 | Field | Details |
 |------|---------|
-| **Student Name** | *Your Name* |
+| **Student Name** | Krrishkumar |
 | **Course** | MCA Data Science |
-| **Subject** | Python Programming (Tkinter, MySQL) |
+| **Subject** | Python Programming  |
 | **Semester** | 1st Sem |
 | **Institution** | Chandigarh University |
 
