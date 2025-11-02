@@ -1,0 +1,84 @@
+-- clinic_db_setup.sql
+CREATE DATABASE IF NOT EXISTS clinicdb;
+USE clinicdb;
+
+-- USERS (login system)
+CREATE TABLE IF NOT EXISTS users (
+  user_id INT AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(50) UNIQUE NOT NULL,
+  password VARCHAR(255) NOT NULL, -- store hashed in production
+  role ENUM('admin','doctor') NOT NULL DEFAULT 'doctor',
+  full_name VARCHAR(100)
+);
+
+-- PATIENTS
+CREATE TABLE IF NOT EXISTS patient (
+  patient_id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  age INT,
+  gender VARCHAR(10),
+  phone VARCHAR(20),
+  address TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- APPOINTMENTS
+CREATE TABLE IF NOT EXISTS appointment (
+  appointment_id INT AUTO_INCREMENT PRIMARY KEY,
+  patient_id INT NOT NULL,
+  date DATE NOT NULL,
+  time_slot VARCHAR(20),
+  status ENUM('Pending','Completed') DEFAULT 'Pending',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (patient_id) REFERENCES patient(patient_id) ON DELETE CASCADE
+);
+
+-- PRESCRIPTIONS
+CREATE TABLE IF NOT EXISTS prescription (
+  prescription_id INT AUTO_INCREMENT PRIMARY KEY,
+  appointment_id INT NOT NULL,
+  diagnosis TEXT,
+  medicines TEXT,
+  dosage TEXT,
+  notes TEXT,
+  follow_up_date DATE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (appointment_id) REFERENCES appointment(appointment_id) ON DELETE CASCADE
+);
+
+-- BILLING
+CREATE TABLE IF NOT EXISTS billing (
+  bill_id INT AUTO_INCREMENT PRIMARY KEY,
+  appointment_id INT NOT NULL,
+  amount DECIMAL(10,2),
+  date DATE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (appointment_id) REFERENCES appointment(appointment_id) ON DELETE CASCADE
+);
+
+-- Sample users (passwords stored plaintext for demo: change in production)
+INSERT IGNORE INTO users (username, password, role, full_name)
+VALUES ('admin', 'admin123', 'admin', 'Clinic Admin'),
+       ('doctor1', 'doc123', 'doctor', 'Dr. John Doe');
+
+INSERT INTO patient (name, age, gender, phone, address) VALUES
+('Rohan Sharma', 32, 'Male', '9876543210', 'Jaipur'),
+('Priya Verma', 27, 'Female', '9867451200', 'Delhi'),
+('Arjun Singh', 45, 'Male', '9988776655', 'Mumbai'),
+('Sneha Patil', 19, 'Female', '9797654321', 'Pune'),
+('Meera Nair', 54, 'Female', '9654712301', 'Kochi');
+
+INSERT INTO appointment (patient_id, date, time_slot, status)
+VALUES
+(1, CURDATE(), '10:00', 'Pending'),
+(2, CURDATE(), '10:30', 'Pending'),
+(3, CURDATE(), '11:00', 'Pending'),
+(4, CURDATE(), '11:30', 'Pending'),
+(5, CURDATE(), '12:00', 'Pending');
+
+INSERT INTO prescription (appointment_id, diagnosis, medicines, dosage, notes, follow_up_date) VALUES
+(1, 'Viral Fever', 'Paracetamol 500mg\nORS Pack', '2 Times a day', 'Drink water', '2025-11-02'),
+(2, 'Cold & Cough', 'Cough Syrup\nCetirizine', 'Once Daily', 'Avoid cold drinks', '2025-11-05'),
+(3, 'Headache', 'Ibuprofen 400mg', 'Twice Daily', 'Rest Properly', '2025-11-03');
+
+select * from patient;
